@@ -49,9 +49,7 @@ def element_present(driver, element):
 		return False
 	return True
 	
-def get_gradebook_data(driver, number_of_classes):
-	gradebook_data = []
-	
+def navigate_to_gradebook(driver):
 	WebDriverWait(driver, timeout=10).until(lambda x: element_present(x, "link2")) # Student Access
 	driver.find_element_by_id("link2").click()
 	print "\n" + "Student Access"
@@ -62,6 +60,9 @@ def get_gradebook_data(driver, number_of_classes):
 	WebDriverWait(driver, timeout=10).until(lambda x: element_present(x, "link4")) # Gradebook
 	driver.find_element_by_id("link4").click()
 	print "\n" + "Gradebook"
+	
+def get_gradebook_data(driver, number_of_classes):
+	gradebook_data = []
 
 	for i in range(number_of_classes): # Get grades from individual classes
 		WebDriverWait(driver, timeout=10).until(lambda x: "gradebook.w" in x.current_url and x.find_element_by_id("link" + (str)(i + 1)))
@@ -74,8 +75,25 @@ def get_gradebook_data(driver, number_of_classes):
 	
 def test_get_gradebook_data(driver, login, password, number_of_classes):	
 	log_in(driver, login, password)
+	navigate_to_gradebook(driver)
 			
 	for gradebook in get_gradebook_data(driver, number_of_classes):
 		print gradebook + "\n" + "\n"
 		
-test_get_gradebook_data(driver, login, password, number_of_classes)
+def test_get_one_gradebook(driver, login, password):
+	log_in(driver, login, password)
+	navigate_to_gradebook(driver)
+	
+	WebDriverWait(driver, timeout=10).until(lambda x: "gradebook.w" in x.current_url and x.find_element_by_id('link1'))
+	driver.find_element_by_id("link3").click()
+
+	WebDriverWait(driver, timeout=10).until(lambda x: x.current_url == "https://www01.nwrdc.wa-k12.net/scripts/cgiip.exe/WService=wissaqus71/gradebook002.w" and x.find_element_by_id('link6'))
+	driver.find_element_by_id("link6").click() 
+	
+	WebDriverWait(driver, timeout=10).until(lambda x: x.find_element_by_id('bViewGradeMarks'))
+	
+	with codecs.open('file.html', 'w', 'utf-8') as f:
+		f.write(driver.page_source) 
+		
+# test_get_gradebook_data(driver, login, password, number_of_classes)
+test_get_one_gradebook(driver, login, password)
