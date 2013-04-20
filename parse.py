@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import re
-import codecs
 
 class Assignment(object):
 	name = "None"
@@ -68,27 +67,20 @@ def writeAssignments(assignments):
 		assignmentFile.write("\n")
 		
 def stripIrrelevantData(data):
-	before, itself, after = data.partition('id="GradeMarkDiv"')
+	before, itself, after = data.partition('<div style="display: none;" id="GradeMarkDiv">')
 	before1, itself1, after1 = before.partition('This student is over the attendance threshold.')
 	return after1
 
 def makeAssignments(gradebook_data):
 	assignments = []
-	for gradebook in gradebook_data:
-		raw = BeautifulSoup(gradebook)
-		stripped = BeautifulSoup(stripIrrelevantData(raw))
+	for gradebook in gradebook_data:	
+		soup = BeautifulSoup(stripIrrelevantData(soup))
 		for tr in soup.find_all('tr'):
 			if assignmentRow(tr):
 				if not allTagStringsNone(tr):
 					if not trCeption(tr):
 						assignments.append(sort(tr))						
 	return assignments
-	
-def save_assignments(gradebook_data):
-	with codecs.open("gradebook.txt", "w", "utf-8") as f:
-		for gradebook in gradebook_data:
-			f.write(gradebook)
-			f.write("\n" + "\n" + "----------------------------" + "\n" + "\n")
 	
 def readInAssignments(filename):
 	lines = open(filename, "r").read().splitlines()
