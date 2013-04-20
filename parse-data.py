@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import codecs
 import re
 
 class Assignment(object):
@@ -12,7 +13,7 @@ class Assignment(object):
 		
 	def __eq__(self, other):
 		return (self.name, self.letterGrade, self.percentGrade, self.date) == (other.name, other.letterGrade, other.percentGrade, other.date)
-		
+	
 def allTagStringsNone(tr):
 	stringsNone = True
 	for td in tr.find_all("td"):
@@ -70,31 +71,20 @@ def stripIrrelevantData(data):
 	before, itself, after = data.partition('<div style="display: none;" id="GradeMarkDiv">')
 	before1, itself1, after1 = before.partition('This student is over the attendance threshold.')
 	return after1
+ 
+with codecs.open ("file.html", "r", "utf-8") as file:
+   data = file.read()
+ 
+soup = BeautifulSoup(stripIrrelevantData(data), "html5lib")
 
-def makeAssignments(gradebook_data):
-	assignments = []
-	for gradebook in gradebook_data:	
-		soup = BeautifulSoup(stripIrrelevantData(soup))
-		for tr in soup.find_all('tr'):
-			if assignmentRow(tr):
-				if not allTagStringsNone(tr):
-					if not trCeption(tr):
-						assignments.append(sort(tr))						
-	return assignments
-	
-def readInAssignments(filename):
-	lines = open(filename, "r").read().splitlines()
-	assignments = []
-	for line in lines:
-		assignment = Assignment()
-		lineList = line.split(";")
-		assignment.name = lineList[0].split(": ")[1]
-		assignment.letterGrade = lineList[1].split(": ")[1]
-		assignment.percentGrade = lineList[2].split(": ")[1]
-		assignment.date = lineList[3].split(": ")[1]
-		assignments.append(assignment)
-	return assignments
-	
-def compare_assignments(new_assignments):
-	old_assignments = readInAssignments("assignments_old.txt")
-	return list(set(assignmentsNew) - set(assignmentsOld))
+assignments = []
+		
+for tr in soup.find_all('tr'):
+	if assignmentRow(tr):
+		if not allTagStringsNone(tr):
+			if not trCeption(tr):
+				assignments.append(sort(tr))
+
+writeAssignments(assignments)
+
+				
