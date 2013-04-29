@@ -1,26 +1,43 @@
 from Tkinter import *
+import tkMessageBox
 import main
 
-class Application(Frame):
-    def createWidgets(self):
-        self.UPDATE = Button(self)
-        self.UPDATE["text"] = "Update"
-        self.UPDATE["command"] =  main.update
-
-        self.UPDATE.pack({"side": "left"})
-
-        self.GET_CHANGES = Button(self)
-        self.GET_CHANGES["text"] = "Get Changes",
-        self.GET_CHANGES["command"] = main.get_changes
-		
-        self.GET_CHANGES.pack({"side": "left"})
-
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
+def display_text(text):
+	tkMessageBox.showinfo(text)
 
 root = Tk()
-app = Application(master=root)
-app.mainloop()
-root.destroy()
+root.geometry("340x320")
+
+root.title("Skyward Checker")
+
+text_frame = Frame(root)
+
+update = Button(text_frame)
+update["text"] = "update"
+update["command"] =  main.update
+
+get_changes = Button(text_frame)
+get_changes["text"] = "Get Changes",
+get_changes["command"] = main.get_changes
+
+username = Entry(text_frame)
+
+username_label = Label(text_frame)
+username_label["text"] = "username"
+
+password = Entry(text_frame)
+
+password_label = Label(text_frame)
+password_label["text"] = "password"
+
+welcome_label = Label(text_frame)
+welcome_label["text"] = "Welcome!"
+welcome_label.place(x = 160, y = 48, width = 68, height = 24)
+
+submit = Button(text_frame, text="Submit", command = display_text("OK!"))
+
+text_frame.pack()
+
+uname = "None"
+pword = "None"
+root.mainloop()

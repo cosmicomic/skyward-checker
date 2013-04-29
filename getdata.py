@@ -14,12 +14,16 @@ def get_semester():
 		
 def fetch_gradebook_data(driver):
 		if get_semester() == 1:
-			WebDriverWait(driver, timeout=10).until(lambda x: x.current_url == "https://www01.nwrdc.wa-k12.net/scripts/cgiip.exe/WService=wissaqus71/gradebook002.w")
+			WebDriverWait(driver, timeout=10).until(lambda x: "gradebook002.w" in x.current_url and element_present(x, "link3"))
 			driver.find_element_by_id("link3").click()
 			# print "\n" + "First Semester"
 		else:
-			WebDriverWait(driver, timeout=10).until(lambda x: x.current_url == "https://www01.nwrdc.wa-k12.net/scripts/cgiip.exe/WService=wissaqus71/gradebook002.w")
-			driver.find_element_by_id("link6").click()	
+			WebDriverWait(driver, timeout=10).until(lambda x: "gradebook002.w" in x.current_url and element_present(x, "link6"))
+			try:
+				driver.find_element_by_id("link6").click()
+			except selenium.common.exceptions.NoSuchElementException:
+				WebDriverWait(driver, timeout=10).until(lambda x: "gradebook002.w" in x.current_url and element_present(x, "link6"))
+				driver.find_element_by_id("link6").click()
 			# print "\n" + "Second Semester"
 		WebDriverWait(driver, timeout=10).until(lambda x: x.find_element_by_id('bViewGradeMarks'))
 		return driver.page_source
@@ -67,27 +71,27 @@ def get_gradebook_data(driver, number_of_classes):
 		
 	return gradebook_data # gradebook_data is a list that gets passed into parsing functions in parse.py
 	
-def test_get_gradebook_data(driver, login, password, number_of_classes):	
-	log_in(driver, login, password)
-	navigate_to_gradebook(driver)
+# def test_get_gradebook_data(driver, login, password, number_of_classes):	
+	# log_in(driver, login, password)
+	# navigate_to_gradebook(driver)
 			
-	for gradebook in get_gradebook_data(driver, number_of_classes):
-		print gradebook + "\n" + "\n"
+	# for gradebook in get_gradebook_data(driver, number_of_classes):
+		# print gradebook + "\n" + "\n"
 		
-def test_get_one_gradebook(driver, login, password):
-	log_in(driver, login, password)
-	navigate_to_gradebook(driver)
+# def test_get_one_gradebook(driver, login, password):
+	# log_in(driver, login, password)
+	# navigate_to_gradebook(driver)
 	
-	WebDriverWait(driver, timeout=10).until(lambda x: "gradebook.w" in x.current_url and x.find_element_by_id('link1'))
-	driver.find_element_by_id("link3").click()
+	# WebDriverWait(driver, timeout=10).until(lambda x: "gradebook.w" in x.current_url and x.find_element_by_id('link1'))
+	# driver.find_element_by_id("link3").click()
 
-	WebDriverWait(driver, timeout=10).until(lambda x: x.current_url == "https://www01.nwrdc.wa-k12.net/scripts/cgiip.exe/WService=wissaqus71/gradebook002.w" and x.find_element_by_id('link6'))
-	driver.find_element_by_id("link6").click() 
+	# WebDriverWait(driver, timeout=10).until(lambda x: x.current_url == "https://www01.nwrdc.wa-k12.net/scripts/cgiip.exe/WService=wissaqus71/gradebook002.w" and x.find_element_by_id('link6'))
+	# driver.find_element_by_id("link6").click() 
 	
-	WebDriverWait(driver, timeout=10).until(lambda x: x.find_element_by_id('bViewGradeMarks'))
+	# WebDriverWait(driver, timeout=10).until(lambda x: x.find_element_by_id('bViewGradeMarks'))
 	
-	with codecs.open('file.html', 'w', 'utf-8') as f:
-		f.write(driver.page_source) 
+	# with codecs.open('file.html', 'w', 'utf-8') as f:
+		# f.write(driver.page_source) 
 		
 # test_get_gradebook_data(driver, login, password, number_of_classes)
 # test_get_one_gradebook(driver, login, password)

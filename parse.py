@@ -69,11 +69,11 @@ def write_assignments(assignments):
 	for assignment in assignments:
 		if assignment.name == "None" or assignment.name == "There are no graded assignments in this category":
 			continue
-		assignment_file.write("Name||||||,,,..|| " + assignment.name + "|||//||")
-		assignment_file.write("Letter Grade||||||,,,..|| " + assignment.letter_grade + "|||//||")
-		assignment_file.write("Percent Grade||||||,,,..|| " + assignment.percent_grade + "|||//||")
-		assignment_file.write("Date||||||,,,..|| " + assignment.date + ";")
-		assignment_file.write("Period||||||,,,..|| " + assignment.period + "|||//||")
+		assignment_file.write("Name|| " + assignment.name + "//")
+		assignment_file.write("Letter Grade|| " + assignment.letter_grade + "//")
+		assignment_file.write("Percent Grade|| " + assignment.percent_grade + "//")
+		assignment_file.write("Date|| " + assignment.date + "//")
+		assignment_file.write("Period|| " + assignment.period + "//")
 		assignment_file.write("\n")
 		
 def strip_irrelevant_data(data):
@@ -91,12 +91,12 @@ def read_in_assignments(filename):
 	assignments = []
 	for line in lines:
 		assignment = Assignment()
-		line_list = line.split("|||//||")
-		assignment.name = line_list[0].split("||||||,,,..|| ")[1]
-		assignment.letter_grade = line_list[1].split("||||||,,,..|| ")[1]
-		assignment.percent_grade = line_list[2].split("||||||,,,..|| ")[1]
-		assignment.date = line_list[3].split("||||||,,,..|| ")[1]
-		assignment.period = line_list[4].split("||||||,,,..|| ")[1]
+		line_list = line.split("//")
+		assignment.name = line_list[0].split("|| ")[1]
+		assignment.letter_grade = line_list[1].split("|| ")[1]
+		assignment.percent_grade = line_list[2].split("|| ")[1]
+		assignment.date = line_list[3].split("|| ")[1]
+		assignment.period = line_list[4].split("|| ")[1]
 		assignments.append(assignment)
 	return assignments
 	
